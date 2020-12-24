@@ -19,15 +19,15 @@ public class ReportsController {
     @Autowired
     private RestTemplate rest;
 
-    private static final String API = "http://localhost:8080/person/";
+    private static final String PERSON_API = "http://localhost:8080/person/";
 
-    private static final String API_ID = "http://localhost:8080/person/{id}";
+    private static final String PERSON_API_ID = "http://localhost:8080/person/{id}";
 
     @GetMapping("/")
     public List<Report> findAll() {
         List<Report> rsl = new ArrayList<>();
         List<Person> persons = rest.exchange(
-                API,
+                PERSON_API,
                 HttpMethod.GET, null, new ParameterizedTypeReference<List<Person>>() {
                 }).getBody();
         persons.forEach(person -> rsl.add(Report.of(1, "first", person)));
@@ -36,7 +36,7 @@ public class ReportsController {
 
     @PostMapping("/")
     public ResponseEntity<Person> create(@RequestBody Person person) {
-        Person rsl = rest.postForObject(API, person, Person.class);
+        Person rsl = rest.postForObject(PERSON_API, person, Person.class);
         return new ResponseEntity<>(
                 rsl,
                 HttpStatus.CREATED
@@ -45,13 +45,13 @@ public class ReportsController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
-       rest.put(API, person);
+       rest.put(PERSON_API, person);
        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        rest.delete(API_ID, id);
+        rest.delete(PERSON_API_ID, id);
         return ResponseEntity.ok().build();
     }
 }
